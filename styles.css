@@ -1,0 +1,76 @@
+
+
+.segmentOnClick {
+    position: relative;
+}
+
+.segmentOnClick img {
+    display: block;
+    margin: 0;
+}
+
+#segmented-canvas{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 3;
+}
+
+#target-img{
+    z-index: 2;
+}
+
+.disappear{
+    display: none;
+}
+
+.visual-demo{
+    border-style: solid;
+    position: relative;
+    width: fit-content;
+}
+
+.segmented-class {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.enlarge-pulse {
+    animation: pulseScale 2s infinite ease-in-out;
+    display: block;
+    transform-origin: bottom;
+}
+
+.blur { filter: blur(2px); }
+
+.rotate-pulse {
+    animation: rotatePulse 2s infinite ease-in-out;
+    display: block;
+    transform-origin: bottom;
+}
+
+@keyframes rotatePulse {
+    0% {
+        transform: rotate(-1deg);
+    }
+    50% {
+        transform: rotate(1deg);
+    }
+    100% {
+        transform: rotate(-1deg);
+    }
+}
+
+@keyframes pulseScale {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+

@@ -1,0 +1,33 @@
+<html>
+    <link rel="stylesheet" href="styles.css">
+    <body>
+        <h1>Image segmentation sample</h1>
+        <section id="demo">
+            <p>click on the image to view the segmentation</p>
+
+            <div class="segmentOnClick">
+                <!-- <img id="target-img" src="https://assets.codepen.io/9177687/dog_flickr_publicdomain.jpeg" crossorigin="anonymous" /> -->
+                <img id="target-img" src="./images/phone.jpg" />
+                <canvas class="segmented" id="segmented-canvas"></canvas>
+                <canvas id="cropped-canvas" class="disappear"></canvas>
+            </div>
+            <button id="segment-click">segment!</button>
+        </section>
+
+        <section id="samples">
+            <h1> Visual effects demo</h1>
+            <h2>enlarge</h2>
+            <div class="enlarge visual-demo" id="enlarge_div">
+                <!-- <img id="enlarge_ref" src="https://assets.codepen.io/9177687/dog_flickr_publicdomain.jpeg" crossorigin="anonymous" /> -->
+                <img id="enlarge_ref" src="./images/phone.jpg" />
+            </div>
+
+            <h2>rotate</h2>
+            <div class="rotate visual-demo" id="rotate_div">
+                <!-- <img id="rotate_ref" src="https://assets.codepen.io/9177687/dog_flickr_publicdomain.jpeg" crossorigin="anonymous" /> -->
+                <img id="rotate_ref" src="./images/phone.jpg" />
+            </div>
+        </section>
+    </body>
+    <script src="script.js" type="module"></script>
+</html>
