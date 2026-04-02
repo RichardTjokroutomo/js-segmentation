@@ -33,9 +33,9 @@ const cropped_elem = document.getElementById("cropped-canvas");
 const section_elem = document.getElementById("samples");
 const img_elem = document.getElementById("target-img");
 const button_elem = document.getElementById("segment-click");
-// const enlarge_ref_img = document.getElementById("enlarge_ref");
-// const rotate_ref_img = document.getElementById("rotate_ref");
-// const image_upload_elem = document.getElementById("image-upload");
+const enlarge_ref_img = document.getElementById("enlarge_ref");
+const rotate_ref_img = document.getElementById("rotate_ref");
+const image_upload_elem = document.getElementById("image-upload");
 console.log("get elems completed!");
 
 // initialize deeplab v3 segmenter
@@ -219,12 +219,13 @@ async function callback(result) {
     const cropped_uint8Array = new Uint8ClampedArray(cropped_image_data.buffer);
     const cropped_dataNew = new ImageData(cropped_uint8Array, width, height);
     cxt_2.putImageData(cropped_dataNew, 0, 0);
+    cropped_elem.classList.add("disappear");
 
     // 3. saving canvas as png img
-    //const link = document.createElement("a");
-    //link.download = "canvas-image.png";
-    //link.href = cropped_elem.toDataURL("images/png");
-    //link.click();
+    const link = document.createElement("a");
+    link.download = "canvas-image.png";
+    link.href = cropped_elem.toDataURL("images/png");
+    link.click();
 
     // 3. do 2nd stage inference
     // ============================================================================
@@ -232,7 +233,8 @@ async function callback(result) {
     console.log("width: " + width + "; height: " + height);
     const img_url = await RawImage.read(img_elem.src);
 
-    const input_points = [[ [Math.floor(cum_x / counter), Math.floor(cum_y / counter)] ]]; // This creates [[ [[x,y], [x,y]] ]]
+    const input_points = [[ [Math.floor(cum_x / counter), Math.floor(cum_y / counter)], [Math.floor(cum_x / counter), Math.floor(cum_y / counter)], [Math.floor(cum_x / counter), Math.floor(cum_y / counter)] ]]; // This creates [[ [[x,y], [x,y]] ]]
+    //const input_points = [[ pointList]];
     const inputs = await processor(img_url, {input_points});
     const outputs = await model(inputs);
     const masks = await processor.post_process_masks(outputs.pred_masks, inputs.original_sizes, inputs.reshaped_input_sizes);
@@ -307,10 +309,10 @@ async function callback(result) {
     cxt_3.putImageData(base_canvas_dataNew, 0, 0);
     console.log("base_canvas width: " + base_canvas.width + "; height: " + base_canvas.height);
 
-    const link = document.createElement("a");
-    link.download = "canvas-image-cropped.png";
-    link.href = base_canvas.toDataURL("image/png");
-    //link.click();
+    const link2 = document.createElement("a");
+    link2.download = "canvas-image-cropped.png";
+    link2.href = base_canvas.toDataURL("image/png");
+    link2.click();
 
     // 6. call other functions
     // ============================================================================
@@ -325,45 +327,45 @@ function segment_image() {
     imageSegmenter.segment(img_elem, callback); // function from google's img segmenter
 }
 
-// function handleImageUpload(event) {
-//     section_elem.classList.add("disappear");
-//     const file = event.target.files[0];
-//     if (!file) return;
+function handleImageUpload(event) {
+    section_elem.classList.add("disappear");
+    const file = event.target.files[0];
+    if (!file) return;
 
-//     const reader = new FileReader();
-//     reader.onload = function(e) {
-//         const dataUrl = e.target.result;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const dataUrl = e.target.result;
 
-//         // Clear previous segmentation canvas
-//         const canvasCtx = canvas_elem.getContext("2d");
-//         canvasCtx.clearRect(0, 0, canvas_elem.width, canvas_elem.height);
+        // Clear previous segmentation canvas
+        const canvasCtx = canvas_elem.getContext("2d");
+        canvasCtx.clearRect(0, 0, canvas_elem.width, canvas_elem.height);
 
-//         // Set up load handler before changing src
-//         let hasSegmented = false;
-//         const performSegmentation = () => {
-//             if (hasSegmented) return;
-//             hasSegmented = true;
-//             console.log("New image loaded, triggering segmentation");
-//             segment_image();
-//         };
+        // Set up load handler before changing src
+        let hasSegmented = false;
+        const performSegmentation = () => {
+            if (hasSegmented) return;
+            hasSegmented = true;
+            console.log("New image loaded, triggering segmentation");
+            segment_image();
+        };
 
-//         img_elem.onload = performSegmentation;
-//         img_elem.onerror = function() {
-//             console.error("Failed to load uploaded image");
-//         };
+        img_elem.onload = performSegmentation;
+        img_elem.onerror = function() {
+            console.error("Failed to load uploaded image");
+        };
 
-//         // Update all image sources
-//         img_elem.src = dataUrl;
-//         if (enlarge_ref_img) enlarge_ref_img.src = dataUrl;
-//         if (rotate_ref_img) rotate_ref_img.src = dataUrl;
+        // Update all image sources
+        img_elem.src = dataUrl;
+        if (enlarge_ref_img) enlarge_ref_img.src = dataUrl;
+        if (rotate_ref_img) rotate_ref_img.src = dataUrl;
 
-//         // If image is already loaded (cached), onload may not fire
-//         if (img_elem.complete) {
-//             performSegmentation();
-//         }
-//     };
-//     reader.readAsDataURL(file);
-// }
+        // If image is already loaded (cached), onload may not fire
+        if (img_elem.complete) {
+            performSegmentation();
+        }
+    };
+    reader.readAsDataURL(file);
+}
 
 // segment on click
 // =======================================================================================
@@ -371,9 +373,9 @@ button_elem.addEventListener("click", segment_image);
 
 // file upload handler
 // =======================================================================================
-// if (image_upload_elem) {
-//     image_upload_elem.addEventListener("change", handleImageUpload);
-// }
+if (image_upload_elem) {
+    image_upload_elem.addEventListener("change", handleImageUpload);
+}
 
 // TODO
 // =======================================================================================
